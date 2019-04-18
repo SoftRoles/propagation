@@ -1,0 +1,38 @@
+{
+  "name": "@softroles/propagation",
+  "version": "1.0.0",
+  "description": "Radio frequency (RF) propagation tools",
+  "keywords": [
+    "RF",
+    "propgation",
+    "antenna",
+    "wireless"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/softroles/propagation.git"
+  },
+  "bugs": {
+    "url": "http://github.com/softroles/propagation/issues"
+  },
+  "author": "Hüseyin Yiğit <yigit.hsyn@gmail.com>",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT"
+    }
+  ],
+  "main": "./",
+  "dependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">= 10.15.0"
+  },
+  "homepage": "https://github.com/softroles/propagation#readme",
+  "directories": {
+    "test": "test"
+  },
+  "license": "MIT"
+}
