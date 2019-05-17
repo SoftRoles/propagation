@@ -1,7 +1,7 @@
 #include <exception>
 #include <iostream>
 #include <args.hxx>
-#include <softroles/propagation/fspl.hpp>
+#include <softroles/propagation/pathloss.hpp>
 
 int main(int argc, char **argv) {
   args::ArgumentParser parser("Radio wave propagation path loss.", "Ref: \n");
@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
     std::cerr << parser;
     return 1;
   }
-  std::cout << softroles::propagation::fspl(args::get(freq), args::get(dist)) << std::endl;
+  std::cout << softroles::propagation::pathloss(args::get(freq), args::get(dist)) << std::endl;
 
   return 0;
 }
