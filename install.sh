@@ -11,8 +11,14 @@ cp src/pathloss.hpp /usr/local/include/softroles/propagation/
 c++ -Wall -o test/pathloss test/pathloss.cpp -lpathloss
 test/pathloss
 # generate bash script
-c++ -Wall -o /usr/local/bin/pathloss src/bash/pathloss.cpp -lpathloss
-c++ --std=c++11 src/mongodb/pathloss.cpp -o main -lmongocxx -lbsoncxx
+c++ -o /usr/local/bin/pathloss src/bash/pathloss.cpp -lpathloss
+# create service
+c++ --std=c++11 src/service/pathloss.cpp -o /usr/local/bin/pathloss.service -lmongocxx -lbsoncxx -lpathloss
+sed s/\<user\>/`whoami`/g template.service > pathloss.service
+sed -i s/\<func\>/pathloss/g pathloss.service
+mv pathloss.service /etc/systemd/system
+systemctl daemon-reload
+systemctl restart pathloss
 # clean
 rm *.so
 rm *.o

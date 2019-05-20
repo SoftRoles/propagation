@@ -1,0 +1,13 @@
+[Unit]
+Description=<desc>
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=<user>
+ExecStart=/usr/local/bin/<func>.service
+
+[Install]
+WantedBy=multi-user.target
