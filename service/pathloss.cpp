@@ -1,6 +1,8 @@
 #include <iostream>
 #include <exception>
 #include <chrono>
+#include <thread>
+#include <future>
 #include <softroles/propagation/pathloss.hpp>
 
 #include <bsoncxx/builder/basic/document.hpp>
@@ -26,6 +28,34 @@ std::string get_server_version(const mongocxx::client& client) {
 
   return bsoncxx::string::to_string(output.view()["version"].get_utf8().value);
 }
+
+}
+
+void func(mongocxx::collection collection, const bsoncxx::document::element& doc) {
+  auto id = doc["_id"].get_oid().value.to_string();
+  std::string error;
+  float freq, dist;
+  try {
+    bsoncxx::array::view args{doc["args"].get_array().value};
+    freq = args[0].get_double().value;
+    dist = args[1].get_double().value;
+  } catch(const std::exception& e) {
+    error = e.what();
+    collection.update_one(make_document(kvp("_id", bsoncxx::oid(id))),
+                          make_document(kvp("$set", make_document(kvp("error",make_document(kvp("stage", "arg parse"), kvp("message", error)))))));
+  }
+  try {
+    auto start = std::chrono::high_resolution_clock::now();
+    auto result = softroles::propagation::pathloss(freq, dist);
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = static_cast<int>(std::chrono::duration_cast<std::chrono::microseconds>(stop-start).count());
+    collection.update_one(make_document(kvp("_id", bsoncxx::oid(id))),
+                          make_document(kvp("$set", make_document(kvp("output",result),kvp("duration",duration)))));
+  } catch(const std::exception& e) {
+    error = e.what();
+    collection.update_one(make_document(kvp("_id", bsoncxx::oid(id))),
+                          make_document(kvp("$set", make_document(kvp("error",make_document(kvp("stage", "calculate"), kvp("message", error)))))));
+  }
 
 }
 
@@ -57,32 +87,9 @@ int main(int argc, char **argv) {
         if(operation.compare("insert") == 0) {
           auto doc = event["fullDocument"];
           auto function = doc["function"].get_utf8().value;
-          auto id = doc["_id"].get_oid().value.to_string();
-          //std::cout << id << std::endl;
+          //std::cout << collection << std::endl;
           if(function.compare("pathloss") == 0) {
-            std::string error;
-            float freq, dist;
-            try {
-              bsoncxx::array::view args{doc["args"].get_array().value};
-              freq = args[0].get_double().value;
-              dist = args[1].get_double().value;
-            } catch(const std::exception& e) {
-              error = e.what();
-              collection.update_one(make_document(kvp("_id", bsoncxx::oid(id))),
-                                    make_document(kvp("$set", make_document(kvp("error",make_document(kvp("stage", "arg parse"), kvp("message", error)))))));
-            }
-            try {
-              auto start = std::chrono::high_resolution_clock::now();
-              auto result = softroles::propagation::pathloss(freq, dist);
-              auto stop = std::chrono::high_resolution_clock::now();
-              auto duration = static_cast<int>(std::chrono::duration_cast<std::chrono::microseconds>(stop-start).count());
-              collection.update_one(make_document(kvp("_id", bsoncxx::oid(id))),
-                                    make_document(kvp("$set", make_document(kvp("output",result),kvp("duration",duration)))));
-            } catch(const std::exception& e) {
-              error = e.what();
-              collection.update_one(make_document(kvp("_id", bsoncxx::oid(id))),
-                                    make_document(kvp("$set", make_document(kvp("error",make_document(kvp("stage", "calculate"), kvp("message", error)))))));
-            }
+            std::future<void> async = std::async(func, collection, doc);
           }
         }
       }

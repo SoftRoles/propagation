@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include <cmath>
-#include "../src/pathloss.hpp"
+#include "../include/pathloss.hpp"
 
 #define EPSILON 0.01
 
