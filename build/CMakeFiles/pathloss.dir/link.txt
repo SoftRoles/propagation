@@ -1,0 +1,2 @@
+/usr/bin/ar qc libpathloss.a  CMakeFiles/pathloss.dir/src/pathloss.cpp.o
+/usr/bin/ranlib libpathloss.a

@@ -1,4 +1,4 @@
- https://github.com/Taywee/args.git 6.0.0
+https://github.com/Taywee/args.git 6.0.0
   comment line 2977 after adding to /use/local/include
 mongocxx v3 
   mv mongocxx, bsoncxx source folder to top level in /usr/local/include

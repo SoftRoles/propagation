@@ -1,0 +1,3 @@
+/root/SoftRoles/Modules/propagation/build/CMakeFiles/rebuild_cache.dir
+/root/SoftRoles/Modules/propagation/build/CMakeFiles/pathloss.dir
+/root/SoftRoles/Modules/propagation/build/CMakeFiles/edit_cache.dir
