@@ -1,2 +1,0 @@
-/usr/bin/ar qc libSTATIC.a  CMakeFiles/STATIC.dir/src/pathloss.bin.cpp.o CMakeFiles/STATIC.dir/src/pathloss.cpp.o CMakeFiles/STATIC.dir/src/pathloss.service.cpp.o
-/usr/bin/ranlib libSTATIC.a
