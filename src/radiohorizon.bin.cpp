@@ -4,7 +4,7 @@
 #include <softroles/propagation/radiohorizon.hpp>
 
 int main(int argc, char **argv) {
-  args::ArgumentParser parser("Radio wave propagation path loss.", "Ref: \n");
+  args::ArgumentParser parser("Line-of-sight distance for radio waves.", "Ref: \n");
   args::HelpFlag help(parser, "help", "Displays this help menu", {'h', "help"});
   args::Group group(parser, "Floating number arguments:", args::Group::Validators::All);
   args::Positional<float> height(group, "h", "Antenna height in [m]");
@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
     std::cerr << parser;
     return 1;
   }
-  std::cout << softroles::propagation::radiohorizon(args::get(height)) << std::endl;
+  std::cout << softroles::propagation::radiohorizon(args::get(height)) << " km" << std::endl;
 
   return 0;
 }

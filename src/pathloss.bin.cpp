@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
     std::cerr << parser;
     return 1;
   }
-  std::cout << softroles::propagation::pathloss(args::get(freq), args::get(dist)) << std::endl;
+  std::cout << softroles::propagation::pathloss(args::get(freq), args::get(dist)) << " dB" << std::endl;
 
   return 0;
 }

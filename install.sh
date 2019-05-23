@@ -1,51 +1,51 @@
-#!/usr/bin/bash
+#!/bin/bash
+
+sources=(pathloss radiohorizon)
 
 # compile
-c++ -c -Wall -Werror -fpic src/pathloss.cpp
-c++ -c -Wall -Werror -fpic src/radiohorizon.cpp
+for source in "${sources[@]}"; do 
+  c++ -c -Wall -Werror -fpic "src/$source.cpp"
+done
 
 # test
-c++ -Wall -o test/pathloss test/pathloss.cpp pathloss.o
-c++ -Wall -o test/radiohorizon test/radiohorizon.cpp radiohorizon.o
-test/pathloss
-test/radiohorizon
+for source in "${sources[@]}"; do 
+  c++ -Wall -o test/$source test/$source.cpp $source.o
+  test/$source
+done
 
 # create lib
-c++ -shared -o libpathloss.so pathloss.o
-c++ -shared -o libradiohorizon.so radiohorizon.o
+for source in "${sources[@]}"; do 
+  c++ -shared -o lib$source.so $source.o
+done
 
 # install
-mv libpathloss.so /usr/local/lib
-mv libradiohorizon.so /usr/local/lib
-ldconfig
-mkdir -p /usr/local/include/softroles/propagation
-cp include/pathloss.hpp /usr/local/include/softroles/propagation/
-cp include/radiohorizon.hpp /usr/local/include/softroles/propagation/
+for source in "${sources[@]}"; do 
+  mv lib$source.so /usr/local/lib
+  ldconfig
+  mkdir -p /usr/local/include/softroles/propagation
+  cp include/$source.hpp /usr/local/include/softroles/propagation/
+done
 
 # generate bash script
-c++ -o /usr/local/bin/pathloss src/pathloss.bin.cpp -lpathloss
-c++ -o /usr/local/bin/radiohorizon src/radiohorizon.bin.cpp -lradiohorizon
-
+for source in "${sources[@]}"; do 
+  c++ -o /usr/local/bin/$source src/$source.bin.cpp -l$source
+done
 
 # create service
-c++ --std=c++11 src/pathloss.service.cpp \
-  -o /usr/local/bin/pathloss.service \
-  -lpthread -lmongocxx -lbsoncxx -lpathloss
-c++ --std=c++11 src/radiohorizon.service.cpp \
-  -o /usr/local/bin/radiohorizon.service \
-  -lpthread -lmongocxx -lbsoncxx -lradiohorizon
-sed s/\<user\>/`whoami`/g template.service > pathloss.service
-sed s/\<user\>/`whoami`/g template.service > radiohorizon.service
-sed -i s/\<func\>/pathloss/g pathloss.service
-sed -i s/\<func\>/radiohorizon/g radiohorizon.service
-mv pathloss.service /etc/systemd/system
-mv radiohorizon.service /etc/systemd/system
-systemctl daemon-reload
-systemctl restart pathloss
-systemctl restart radiohorizon
-systemctl enable pathloss
-systemctl enable radiohorizon
+for source in "${sources[@]}"; do 
+  c++ --std=c++11 src/$source.service.cpp \
+    -o /usr/local/bin/$source.service \
+    -lpthread -lmongocxx -lbsoncxx -l$source
+  sed s/\<user\>/`whoami`/g template.service > $source.service
+  sed -i s/\<func\>/$source/g $source.service
+  mv $source.service /etc/systemd/system
+  systemctl daemon-reload
+  systemctl restart $source
+  systemctl enable $source
+done
 
 # clean
-rm pathloss.o
-rm radiohorizon.o
+for source in "${sources[@]}"; do 
+  rm $source.o
+  rm test/$source
+done
