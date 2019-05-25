@@ -1,7 +1,7 @@
 #include <iostream>
 #include <exception>
 #include <chrono>
-#include <thread>
+#include <string>
 #include <future>
 #include <softroles/propagation/radiohorizon.hpp>
 
@@ -36,7 +36,7 @@ void func(mongocxx::collection collection, const bsoncxx::document::element& doc
   std::string error;
   float height;
   try {
-    height = doc["args"]["height"].get_double().value;
+    height = std::stof(static_cast<std::string>(doc["args"]["height"].get_utf8().value));
   } catch(const std::exception& e) {
     error = e.what();
     collection.update_one(make_document(kvp("_id", bsoncxx::oid(id))),
