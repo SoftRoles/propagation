@@ -35,8 +35,8 @@ void func(mongocxx::collection collection, const bsoncxx::document::element& doc
   std::string error;
   float freq, dist;
   try {
-    freq = static_cast<float>(doc["args"]["freq"].get_double().value);
-    dist = static_cast<float>(doc["args"]["dist"].get_double().value);
+    freq = std::stof(static_cast<std::string>(doc["args"]["freq"].get_utf8().value));
+    dist = std::stof(static_cast<std::string>(doc["args"]["dist"].get_utf8().value));
   } catch(const std::exception& e) {
     error = e.what();
     collection.update_one(make_document(kvp("_id", bsoncxx::oid(id))),
