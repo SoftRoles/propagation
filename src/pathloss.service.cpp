@@ -36,9 +36,8 @@ void func(mongocxx::collection collection, const bsoncxx::document::element& doc
   std::string error;
   float freq, dist;
   try {
-    bsoncxx::array::view args{doc["args"].get_array().value};
-    freq = args[0].get_double().value;
-    dist = args[1].get_double().value;
+    freq = doc["args"]["freq"].get_double().value;
+    dist = doc["args"]["dist"].get_double().value;
   } catch(const std::exception& e) {
     error = e.what();
     collection.update_one(make_document(kvp("_id", bsoncxx::oid(id))),

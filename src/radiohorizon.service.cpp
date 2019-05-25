@@ -36,8 +36,7 @@ void func(mongocxx::collection collection, const bsoncxx::document::element& doc
   std::string error;
   float height;
   try {
-    bsoncxx::array::view args{doc["args"].get_array().value};
-    height = args[0].get_double().value;
+    height = doc["args"]["height"].get_double().value;
   } catch(const std::exception& e) {
     error = e.what();
     collection.update_one(make_document(kvp("_id", bsoncxx::oid(id))),
