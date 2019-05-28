@@ -15,7 +15,7 @@ done
 
 # create lib
 for source in "${sources[@]}"; do 
-  c++ -shared -o lib$source.so $source.o
+  c++ -shared -o lib/lib$source.so $source.o
 done
 
 # install
