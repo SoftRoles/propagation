@@ -4,11 +4,14 @@
 #include <softroles/propagation/pathloss.hpp>
 
 int main(int argc, char **argv) {
-  args::ArgumentParser parser("Radio wave propagation path loss.", "Ref: \n");
-  args::HelpFlag help(parser, "help", "Displays this help menu", {'h', "help"});
-  args::Group group(parser, "Floating number arguments:", args::Group::Validators::All);
-  args::Positional<float> freq(group, "freq", "Frequency in MHz");
-  args::Positional<float> dist(group, "dist", "Distance in km");
+  args::ArgumentParser parser("radio wave propagation path loss", "");
+  args::HelpFlag help(parser, "help", "displays this help menu", {'h', "help"});
+  args::Group group1(parser, "flag arguments:", args::Group::Validators::AllOrNone);
+  args::ValueFlag<float> freq1(group1, "freq", "frequency in MHz", {'f', "freq"});
+  args::ValueFlag<float> dist1(group1, "dist", "distance in km", {'d', "dist"});
+  args::Group group2(parser, "positional arguments:", args::Group::Validators::AllOrNone);
+  args::Positional<float> freq2(group2, "freq", "");
+  args::Positional<float> dist2(group2, "dist", "");
   try
   {
     parser.ParseCLI(argc, argv);
@@ -26,11 +29,19 @@ int main(int argc, char **argv) {
   }
   catch (args::ValidationError e)
   {
-    std::cerr << "Usage:" /*<< e.what() */<< std::endl;
+    std::cerr << "Usage:" << e.what() << std::endl;
     std::cerr << parser;
     return 1;
   }
-  std::cout << softroles::propagation::pathloss(args::get(freq), args::get(dist)) << " dB" << std::endl;
 
+  if(freq2 && dist2) {
+    std::cout << softroles::propagation::pathloss(args::get(freq2), args::get(dist2)) << std::endl;
+  }
+  else if(freq1 && dist1) {
+    std::cout << softroles::propagation::pathloss(args::get(freq1), args::get(dist1)) << std::endl;
+  }
+  else {
+    std::cerr << parser;
+  }
   return 0;
 }
