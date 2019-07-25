@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="shortcut icon" type="image/png" href="../../img/favicon.png" />
+  <title>Anten IO : Apps : Coverage Map</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126752612-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-126752612-1');
+  </script>
+
+  <!-- JQuery -->
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <!-- Custom -->
+  <link rel="stylesheet" href="css/navbar.css">
+
+  <!-- Mapbox -->
+  <script src="node_modules/mapbox-gl/dist/mapbox-gl.js"></script>
+  <link href='node_modules/mapbox-gl/dist/mapbox-gl.css' rel='stylesheet' />
+
+  <!-- Semantic UI -->
+  <link href='node_modules/semantic-ui-button/button.min.css' rel='stylesheet' />
+  <link href='node_modules/semantic-ui-icon/icon.min.css' rel='stylesheet' />
+  <link href='node_modules/semantic-ui-transition/transition.min.css' rel='stylesheet' />
+  <link href='node_modules/semantic-ui-form/form.min.css' rel='stylesheet' />
+  <link href='node_modules/semantic-ui-segment/segment.min.css' rel='stylesheet' />
+  <link href='node_modules/semantic-ui-dropdown/dropdown.min.css' rel='stylesheet' />
+  <link href='node_modules/semantic-ui-accordion/accordion.min.css' rel='stylesheet' />
+  <link href='node_modules/semantic-ui-divider/divider.min.css' rel='stylesheet' />
+  <script src="node_modules/semantic-ui-transition/transition.min.js"></script>
+  <script src="node_modules/semantic-ui-form/form.min.js"></script>
+  <script src="node_modules/semantic-ui-dropdown/dropdown.min.js"></script>
+  <script src="node_modules/semantic-ui-accordion/accordion.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      position: absolute;
+      top: 50px;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .container-fluid {
+      position: absolute;
+      z-index: 1;
+      top: 50px;
+      width: auto;
+    }
+
+    #transmitter-position-set-ui {
+      position: absolute;
+      z-index: 1;
+      top: 60px;
+      left: calc(50% - 125px);
+      width: 250px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body class="bg-white">
+  <!-- Navbar -->
+  <nav class="navbar navbar-inverse navbar-expand-sm fixed-top" style="background-color: #212529;">
+    <div class="navbar-brand"><a href="/"></a> : <a href="/#apps"></a>
+      : <a href="/apps/coverage/index.html"></a></div>
+    <!-- <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedConten" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto mr-0">
+        <li id="add" class="active" style="display: none;">
+          <a class="nav-link" onclick="openAddItemWin()" style="background: #212529; color: rgba(255, 255, 255, 1.0)">Add</a>
+        </li>
+      </ul>
+    </div> -->
+  </nav>
+
+  <!-- Container -->
+  <div id="map"></div>
+  <div class="container-fluid">
+    <button id="configuration-open" class="circular ui black icon button mt-2">
+      <i class="icon large settings"></i>
+    </button>
+    <div id="configuration" class="ui inverted segment" style="width:250px; display:none;">
+      <div class="ui fluid inverted mini form">
+        <div class="row justify-content-left mb-2">
+          <i id="configuration-close" class="icon big chevron left"></i>
+          <h5>Configuration</h5>
+        </div>
+        <div class="ui inverted accordion field">
+          <div class="title">
+            <i class="icon dropdown"></i>
+            Propagation
+          </div>
+          <div id="propagation-content" class="content">
+            <div class="transition hidden field">
+              <label class="">Frequency [MHz]</label>
+              <input id="frequency" class="" placeholder="in MHz" value="2450" type="number">
+              <label class="mt-1">Analysis</label>
+              <select id="propagation-analysis" class="ui selection dropdown">
+                <option value="coverage">Coverage</option>
+              </select>
+            </div>
+          </div>
+          <div id="transmitter-head" class="title">
+            <i class="icon dropdown"></i>
+            Transmitter
+          </div>
+          <div id="transmitter-content" class="content">
+            <div class="transition hidden field">
+              <div id="transmitter-position">
+                <label class="">Position [lat, lon]</label>
+                <input type="text" readonly="" placeholder="lat, lon" value="41, 29">
+                <div id="transmitter-position-set" class="mt-1 ui fluid mini inverted basic button">
+                  Set
+                </div>
+              </div>
+              <div id="transmitter-antenna-height">
+                <label class="mt-1">Antenna height [m]</label>
+                <input class="" placeholder="in meters" type="number" value="10">
+              </div>
+              <div id="transmitter-antenna-pattern">
+                <label class="hidden mt-1">Antenna pattern</label>
+                <select class="ui selection dropdown fluid">
+                  <option value="isotropic">Isotropic</option>
+                </select>
+              </div>
+              <div id="transmitter-power">
+                <label class="mt-1">Input power [mW]</label>
+                <input class="" placeholder="in milli-Watts" value="1" type="number">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="transmitter-position-set-ui" class="container-fluid">
+    <div class="ui inverted segment" style="padding: 3px;">
+      <div class="ui fluid inverted mini form">
+        <input id="transmitter-position-set-input" type="text" placeholder="lat,lon">
+        <div id="transmitter-position-set-okay" class="ui fluid mini inverted basic button">Okay</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var lastFocused = ""
+
+    function setFocused(id) {
+      lastFocused = id;
+    }
+    mapboxgl.accessToken = 'pk.eyJ1IjoiaHN5biIsImEiOiJjaXpmZHVxNGIwMDBlMnFvM3hpenZ3ZmhxIn0.VIrTwIeSR9zt7oSp5ayr4A';
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [29, 40],
+      zoom: 6
+    });
+
+    var transmitter_position = new mapboxgl.Marker().setLngLat([29,41])
+    map.on("load", function() {
+      transmitter_position.addTo(map)
+      map.on("click", function(e) {
+        if (lastFocused == "transmitter-position-set-ui") {
+          $("#transmitter-position-set-input").val("" + e.lngLat.lat + ", " + e.lngLat.lng)
+          transmitter_position.setLngLat({ lng: e.lngLat.lng, lat: e.lngLat.lat })
+        }
+      })
+
+    })
+
+    // initialize ui
+    $('.ui.accordion').accordion()
+    $('.ui.dropdown').dropdown()
+
+    // configuration events 
+    var is_configuration_opened = false;
+    var analysis = {
+      "coverage": {
+        "shows" : {
+          "elements": ["transmitter-head", "transmitter-content", "transmitter-position", "transmitter-antenna-height", "transmitter-antenna-pattern", "transmitter-power"],
+          "markers": ["transmitter-position"]
+        }
+      }
+    }
+
+    $('#configuration-open').click(function(e) {
+      $(this).transition({
+        animation: 'fade left out',
+        duration: 500
+      })
+      setTimeout(function() {
+        $("#configuration").transition({
+          animation: 'fade right in',
+          duration: 500
+        })
+        if(!is_configuration_opened) {
+          $(".ui.accordion").accordion("open", 0);
+          is_configuration_opened = true;
+        }
+      }, 500)
+    })
+    $('#configuration-close').click(function(e) {
+      $("#configuration").transition({
+        animation: 'fade left out',
+        duration: 500
+      })
+      setTimeout(function() {
+        $('#configuration-open').transition({
+          animation: 'fade right in',
+          duration: 500
+        })
+      }, 500)
+    })
+
+    $("#propagation-analysis").change(function(){
+      console.log($("#propagation-analysis").val())
+    })
+
+    // transmitter events 
+    //$("#transmitter-head").hide("")
+    //$("#transmitter-content").hide("")
+
+
+    $("#transmitter-position-set").click(function(e) {
+      setFocused("transmitter-position-set-ui")
+      $("#configuration").transition({
+        animation: 'fade left out',
+        duration: 500
+      })
+      setTimeout(function() {
+        $('#transmitter-position-set-ui').transition({
+          animation: 'fade right in',
+          duration: 500
+        })
+      }, 500)
+    })
+
+    $("#transmitter-position-set-okay").click(function(e) {
+      $("#transmitter-position > input").val($("#transmitter-position-set-input").val())
+
+      setFocused("")
+      $("#transmitter-position-set-ui").transition({
+        animation: 'fade left out',
+        duration: 500
+      })
+      setTimeout(function() {
+        $('#configuration').transition({
+          animation: 'fade right in',
+          duration: 500
+        })
+      }, 500)
+    })
+      
+    $("#transmitter-position-set-input").keyup(function(){
+      var latlng = $("#transmitter-position-set-input").val().split(", ")
+      transmitter_position.setLngLat({lat: latlng[0], lng: latlng[1]})
+    })
+
+  </script>
+
+</body>
+
+</html>
+

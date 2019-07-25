@@ -1,0 +1,28 @@
+{
+  "name": "coverage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^4.3.1",
+    "dropdown": "^0.2.0",
+    "jquery": "^3.3.1",
+    "mapbox-gl": "^0.54.0",
+    "semantic-ui-accordion": "^2.3.1",
+    "semantic-ui-button": "^2.3.2",
+    "semantic-ui-dimmer": "^2.4.0",
+    "semantic-ui-divider": "^2.3.1",
+    "semantic-ui-dropdown": "^2.4.1",
+    "semantic-ui-form": "^2.4.0",
+    "semantic-ui-icon": "^2.3.3",
+    "semantic-ui-segment": "^2.4.0",
+    "semantic-ui-transition": "^2.3.1"
+  },
+  "devDependencies": {}
+}

@@ -1,0 +1,66 @@
+/* navbar text color */
+
+.navbar .navbar-brand {
+  color: #fed136
+}
+
+.navbar>.navbar-brand a {
+  color: #fed136
+}
+
+/* @media (min-width: 768px) {
+  .navbar> .navbar-brand {
+    color: rgba(255, 255, 255, 0.7)
+  }
+  .navbar> .navbar-brand a {
+    color:  rgba(255, 255, 255, 0.7);
+  }
+} */
+
+.navbar-brand {
+  font-size: 16px;
+  margin-right: 0rem;
+}
+
+@media (min-width: 768px) {
+  .navbar-brand {
+    font-size: 18px;
+  }
+}
+
+.nav-link {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  .nav-link {
+    font-size: 16px;
+  }
+}
+
+.navbar .navbar-toggler {
+  border-color: #ddd;
+}
+
+.navbar-toggler {
+  background-color: #fed136;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 1.00em;
+}
+
+.navbar-toggler-icon {
+  height: 1.25em;
+  width: 1.25em;
+}
+
+@media (min-width: 768px) {
+  .navbar-toggler-icon {
+    height: 1em;
+    width: 1em;
+  }
+}
+
+.navbar-dark .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#888' stroke-width='3' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
