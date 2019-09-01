@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="shortcut icon" type="image/png" href="../../img/favicon.png" />
-  <title>Anten IO : Apps : Coverage Map</title>
+  <title>Anten IO : Apps : Propagation</title>
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126752612-1"></script>
@@ -49,6 +49,9 @@
   <script src="node_modules/semantic-ui-dropdown/dropdown.min.js"></script>
   <script src="node_modules/semantic-ui-accordion/accordion.min.js"></script>
 
+  <!-- Async.js -->
+  <script src='node_modules/async/dist/async.min.js'></script>
+
   <style>
     body {
       margin: 0;
@@ -62,10 +65,17 @@
       width: 100%;
     }
 
-    .container-fluid {
+    #configuration-menu {
+      position: absolute;
+      z-index: 2;
+      top: 50px;
+      width: auto;
+    }
+
+    #proceed {
       position: absolute;
       z-index: 1;
-      top: 50px;
+      top: 120px;
       width: auto;
     }
 
@@ -83,8 +93,8 @@
 <body class="bg-white">
   <!-- Navbar -->
   <nav class="navbar navbar-inverse navbar-expand-sm fixed-top" style="background-color: #212529;">
-    <div class="navbar-brand"><a href="/"></a> : <a href="/#apps"></a>
-      : <a href="/apps/coverage/index.html"></a></div>
+    <div class="navbar-brand"><a href="/">Anten IO</a> : <a href="/#apps">Apps</a>
+      : <a href="/apps/propagation/index.html">Propagation</a></div>
     <!-- <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedConten" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -99,7 +109,7 @@
 
   <!-- Container -->
   <div id="map"></div>
-  <div class="container-fluid">
+  <div id="configuration-menu" class="container-fluid">
     <button id="configuration-open" class="circular ui black icon button mt-2">
       <i class="icon large settings"></i>
     </button>
@@ -122,6 +132,14 @@
               <select id="propagation-analysis" class="ui selection dropdown">
                 <option value="coverage">Coverage</option>
               </select>
+              <label class="mt-1">Medium</label>
+              <select id="propagation-medium" class="ui selection dropdown">
+                <option value="free-space">Free space</option>
+              </select>
+              <label class="mt-1">Environment</label>
+              <select id="propagation-environment" class="ui selection dropdown">
+                <option value="no-terrain">None</option>
+              </select>
             </div>
           </div>
           <div id="transmitter-head" class="title">
@@ -141,9 +159,9 @@
                 <label class="mt-1">Antenna height [m]</label>
                 <input class="" placeholder="in meters" type="number" value="10">
               </div>
-              <div id="transmitter-antenna-pattern">
+              <div>
                 <label class="hidden mt-1">Antenna pattern</label>
-                <select class="ui selection dropdown fluid">
+                <select id="transmitter-antenna-pattern" class="ui selection dropdown fluid">
                   <option value="isotropic">Isotropic</option>
                 </select>
               </div>
@@ -159,6 +177,12 @@
   </div>
 
 
+  <div id="proceed" class="container-fluid">
+    <button id="analyze" class="circular ui black icon button mt-2" onclick="propagate()">
+      <i class="icon large play"></i>
+    </button>
+  </div>
+
   <div id="transmitter-position-set-ui" class="container-fluid">
     <div class="ui inverted segment" style="padding: 3px;">
       <div class="ui fluid inverted mini form">
@@ -167,6 +191,8 @@
       </div>
     </div>
   </div>
+
+  <script src="js/propagate.js"></script>
 
   <script>
     var lastFocused = ""
@@ -182,7 +208,7 @@
       zoom: 6
     });
 
-    var transmitter_position = new mapboxgl.Marker().setLngLat([29,41])
+    var transmitter_position = new mapboxgl.Marker().setLngLat([29, 41])
     map.on("load", function() {
       transmitter_position.addTo(map)
       map.on("click", function(e) {
@@ -202,7 +228,7 @@
     var is_configuration_opened = false;
     var analysis = {
       "coverage": {
-        "shows" : {
+        "shows": {
           "elements": ["transmitter-head", "transmitter-content", "transmitter-position", "transmitter-antenna-height", "transmitter-antenna-pattern", "transmitter-power"],
           "markers": ["transmitter-position"]
         }
@@ -219,7 +245,7 @@
           animation: 'fade right in',
           duration: 500
         })
-        if(!is_configuration_opened) {
+        if (!is_configuration_opened) {
           $(".ui.accordion").accordion("open", 0);
           is_configuration_opened = true;
         }
@@ -238,14 +264,13 @@
       }, 500)
     })
 
-    $("#propagation-analysis").change(function(){
+    $("#propagation-analysis").change(function() {
       console.log($("#propagation-analysis").val())
     })
 
     // transmitter events 
     //$("#transmitter-head").hide("")
     //$("#transmitter-content").hide("")
-
 
     $("#transmitter-position-set").click(function(e) {
       setFocused("transmitter-position-set-ui")
@@ -276,10 +301,10 @@
         })
       }, 500)
     })
-      
-    $("#transmitter-position-set-input").keyup(function(){
+
+    $("#transmitter-position-set-input").keyup(function() {
       var latlng = $("#transmitter-position-set-input").val().split(", ")
-      transmitter_position.setLngLat({lat: latlng[0], lng: latlng[1]})
+      transmitter_position.setLngLat({ lat: latlng[0], lng: latlng[1] })
     })
 
   </script>
@@ -287,4 +312,3 @@
 </body>
 
 </html>
-
