@@ -1,6 +1,7 @@
 function propagate() {
   var radio_horizon = 0
   var antenna_height = $("#transmitter-antenna-height > input").val()
+  var NRanges = 10
   var transmitter_antenna_pattern = $("#transmitter-antenna-pattern").val()
   var transmitter_antenna_pattern_id = ""
   var transmitter_antenna_pattern_data = []
