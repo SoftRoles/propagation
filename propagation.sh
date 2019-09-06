@@ -22,8 +22,10 @@ if [[ "$#" -eq 0 ]]; then
   exit 1
 fi
 
-if [[ "$#" -eq 1 ]] && [[ "$1" == "pattern" ]]; then
-  echo "here"
-  bash "propagation-pattern.sh"
+if [[ "$#" -ge 1 ]]; then
+  targs=${@/$1/}
+  #echo $targs
+  #echo "propagation-$1.sh $targs"
+  bash propagation-$1.sh $targs
 fi
 

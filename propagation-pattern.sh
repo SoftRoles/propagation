@@ -11,7 +11,7 @@ Definition:
     Antenna pattern tools   
 
 Submodules:      
-    list :   List antenna patterns in database
+    draw   Draw antenna pattern on a map
  
 END
 )
@@ -21,8 +21,8 @@ if [[ "$#" -eq 0 ]]; then
   exit 1
 fi
 
-if [[ "$#" -eq 1 ]] && [[ "$1" == "list" ]]; then
-  echo "here"
-  bash "propagation-pattern-list.sh"
+if [[ "$#" -ge 1 ]]; then
+  targs=${@/$1/}
+  bash propagation-pattern-$1.sh $targs
 fi
 
